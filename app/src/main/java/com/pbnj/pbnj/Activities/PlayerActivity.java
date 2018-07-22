@@ -1,18 +1,26 @@
 package com.pbnj.pbnj.Activities;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.KeyEvent;
 import android.view.SurfaceView;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.MediaController;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bambuser.broadcaster.BroadcastPlayer;
 import com.bambuser.broadcaster.PlayerState;
+import com.pbnj.pbnj.Adapter.MessageAdapter;
 import com.pbnj.pbnj.R;
+import com.pbnj.pbnj.Util.KeyboardUtil;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -39,9 +47,16 @@ public class PlayerActivity extends AppCompatActivity
     @BindView(R.id.PreviewSurfaceView) SurfaceView mSurfaceView;
     @BindView(R.id.textViewPlayerStatus) TextView mPlayerStatusTextView;
 
+    @BindView(R.id.editTextMessageEntryInput) EditText mMessageEntry;
+    @BindView(R.id.recyclerViewPlayerMessages) RecyclerView mRecyclerViewMessages;
+    @BindView(R.id.progressBarPlayer) ProgressBar mProgressBar;
+
     private final OkHttpClient mOkHttpClient = new OkHttpClient();
     private BroadcastPlayer mBroadcastPlayer = null;
     private MediaController mMediaController = null;
+
+    private MessageAdapter mMessageAdapter;
+    private RecyclerView.LayoutManager mManager;
 
     public static Intent newInstance(Context context)
     {
@@ -63,6 +78,7 @@ public class PlayerActivity extends AppCompatActivity
     public void onResume()
     {
         super.onResume();
+        showProgressBar();
         mPlayerStatusTextView.setText("Loading latest broadcast");
         getLatestResourceUri();
     }
@@ -72,7 +88,6 @@ public class PlayerActivity extends AppCompatActivity
     {
         super.onPause();
         mBroadcastPlayer.close();
-        mSurfaceView = null;
     }
 
     @Override
@@ -80,28 +95,29 @@ public class PlayerActivity extends AppCompatActivity
     {
         super.onDestroy();
         mBroadcastPlayer.close();
-        mSurfaceView = null;
     }
 
 
     private void initViews()
     {
-        mSurfaceView.setOnClickListener(new View.OnClickListener()
+        mMessageAdapter = new MessageAdapter();
+        mManager = new LinearLayoutManager(this);
+        mRecyclerViewMessages.setAdapter(mMessageAdapter);
+        mRecyclerViewMessages.setLayoutManager(mManager);
+
+        mMessageEntry.setOnEditorActionListener(new TextView.OnEditorActionListener()
         {
             @Override
-            public void onClick(View view)
+            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent)
             {
-                if (mMediaController != null)
-                {
-                    if (mMediaController.isShowing())
-                    {
-                        mMediaController.hide();
-                    }
-                    else
-                    {
-                        mMediaController.show();
-                    }
-                }
+                // Send message to api
+                // add message to adapter
+
+                mMessageEntry.setText("");
+                mMessageEntry.clearFocus();
+                KeyboardUtil.hide(PlayerActivity.this);
+
+                return true;
             }
         });
     }
@@ -200,6 +216,7 @@ public class PlayerActivity extends AppCompatActivity
             }
             if (state == PlayerState.PLAYING || state == PlayerState.PAUSED || state == PlayerState.COMPLETED)
             {
+                hideProgressBar();
                 if (mMediaController == null && mBroadcastPlayer != null && !mBroadcastPlayer.isTypeLive())
                 {
                     mMediaController = new MediaController(PlayerActivity.this);
@@ -209,16 +226,18 @@ public class PlayerActivity extends AppCompatActivity
                 if (mMediaController != null)
                 {
                     mMediaController.setEnabled(true);
-                    mMediaController.show();
                 }
             }
             else if (state == PlayerState.ERROR || state == PlayerState.CLOSED)
             {
+                hideProgressBar();
+
                 if (mMediaController != null)
                 {
                     mMediaController.setEnabled(false);
                     mMediaController.hide();
                 }
+
                 mMediaController = null;
             }
         }
@@ -226,9 +245,16 @@ public class PlayerActivity extends AppCompatActivity
         @Override
         public void onBroadcastLoaded(boolean live, int width, int height)
         {
-
         }
     };
 
+    private void showProgressBar()
+    {
+        mProgressBar.setVisibility(View.VISIBLE);
+    }
 
+    private void hideProgressBar()
+    {
+        mProgressBar.setVisibility(View.GONE);
+    }
 }
