@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
@@ -22,10 +23,9 @@ import android.widget.TextView;
 import com.bambuser.broadcaster.BroadcastPlayer;
 import com.bambuser.broadcaster.PlayerState;
 import com.pbnj.pbnj.Adapter.MessageAdapter;
+import com.pbnj.pbnj.Adapter.RecipePagerAdapter;
 import com.pbnj.pbnj.Fragments.RecipeFragment;
-import com.pbnj.pbnj.HomeCooked;
 import com.pbnj.pbnj.Models.Message;
-import com.pbnj.pbnj.Models.RecipeStep;
 import com.pbnj.pbnj.R;
 import com.pbnj.pbnj.Util.KeyboardUtil;
 import com.pbnj.pbnj.Util.SharedPrefs;
@@ -79,11 +79,13 @@ public class PlayerActivity extends AppCompatActivity
     @BindView(R.id.viewRightPanelBackground) View mRightPanelBackground;
 
     //Step views
-    @BindView(R.id.textViewStepText) TextView mStepDescription;
-    @BindView(R.id.textViewStepNumber) TextView mStepNumber;
+//    @BindView(R.id.textViewStepText) TextView mStepDescription;
+//    @BindView(R.id.textViewStepNumber) TextView mStepNumber;
 
     @BindAnim(R.anim.slide_in_right) Animation mAnimationSlideInRight;
     @BindAnim(R.anim.fade_in) Animation mAnimationFadeIn;
+
+    @BindView(R.id.viewPagerRecipeSteps) ViewPager mPager;
 
     private final OkHttpClient mOkHttpClient = new OkHttpClient();
     private BroadcastPlayer mBroadcastPlayer = null;
@@ -137,6 +139,7 @@ public class PlayerActivity extends AppCompatActivity
 
     private void initViews()
     {
+
         //Hide status text (debugging)
         mPlayerStatusTextView.setVisibility(View.GONE);
 
@@ -145,9 +148,22 @@ public class PlayerActivity extends AppCompatActivity
         mRightPanelContainer.setVisibility(View.GONE);
 
         //Stepper
-        RecipeStep lCurrStep = HomeCooked.getInstance().getNextShow().getCurrentStep();
-        mStepDescription.setText(lCurrStep.description);
-        mStepNumber.setText(lCurrStep.stepNumber);
+//        RecipeStep lCurrStep = HomeCooked.getInstance().getNextShow().getCurrentStep();
+//        mStepDescription.setText(lCurrStep.description);
+//        mStepNumber.setText(lCurrStep.stepNumber);
+        mPager.setAdapter(new RecipePagerAdapter(new RecipePagerAdapter.SingleClickListener()
+        {
+            @Override
+            public void onSingleClick()
+            {
+                getSupportFragmentManager().beginTransaction()
+                                           .add(R.id.frameLayoutRecipeContainer, RecipeFragment.newInstance(), RecipeFragment.TAG)
+                                           .addToBackStack(RecipeFragment.TAG)
+                                           .commit();
+
+            }
+        }));
+        ;
 
         //Font
         Typeface lFontCircular = Typeface.createFromAsset(getAssets(), "fonts/CircularStd_Book.otf");
@@ -355,7 +371,7 @@ public class PlayerActivity extends AppCompatActivity
         mProgressBar.setVisibility(View.GONE);
     }
 
-    @OnClick(R.id.cardViewRecipeStepContainer)
+    @OnClick({R.id.cardViewRecipeStepContainer, R.id.viewPagerRecipeSteps})
     public void onRecipeCardClicked()
     {
         getSupportFragmentManager().beginTransaction()
