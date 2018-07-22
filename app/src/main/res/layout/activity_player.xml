@@ -107,11 +107,12 @@
     </LinearLayout>
 
     <View
+        android:id="@+id/viewRightPanelBackground"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@drawable/fade"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        android:background="@drawable/fade"
         app:layout_constraintStart_toStartOf="@id/guidelinePlayerCenter"
         app:layout_constraintTop_toTopOf="parent" />
 

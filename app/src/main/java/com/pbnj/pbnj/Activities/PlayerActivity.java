@@ -12,7 +12,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.KeyEvent;
 import android.view.SurfaceView;
 import android.view.View;
+import android.view.animation.Animation;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.MediaController;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -22,7 +24,6 @@ import com.bambuser.broadcaster.PlayerState;
 import com.pbnj.pbnj.Adapter.MessageAdapter;
 import com.pbnj.pbnj.Fragments.RecipeFragment;
 import com.pbnj.pbnj.HomeCooked;
-import com.pbnj.pbnj.Models.Meal;
 import com.pbnj.pbnj.Models.Message;
 import com.pbnj.pbnj.Models.RecipeStep;
 import com.pbnj.pbnj.R;
@@ -35,6 +36,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.Locale;
 
+import butterknife.BindAnim;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -65,11 +67,16 @@ public class PlayerActivity extends AppCompatActivity
     //Chat views
     @BindView(R.id.editTextMessageEntryInput) EditText mMessageEntry;
     @BindView(R.id.recyclerViewPlayerMessages) RecyclerView mRecyclerViewMessages;
+    @BindView(R.id.cardViewRecipeStepContainer) CardView mRecipeStepContainer;
+    @BindView(R.id.linearLayoutRightPanelContainer) LinearLayout mRightPanelContainer;
+    @BindView(R.id.viewRightPanelBackground) View mRightPanelBackground;
 
     //Step views
     @BindView(R.id.textViewStepText) TextView mStepDescription;
     @BindView(R.id.textViewStepNumber) TextView mStepNumber;
 
+    @BindAnim(R.anim.slide_in_right) Animation mAnimationSlideInRight;
+    @BindAnim(R.anim.fade_in) Animation mAnimationFadeIn;
 
     private final OkHttpClient mOkHttpClient = new OkHttpClient();
     private BroadcastPlayer mBroadcastPlayer = null;
@@ -122,6 +129,10 @@ public class PlayerActivity extends AppCompatActivity
     {
         //Hide status text (debugging)
         mPlayerStatusTextView.setVisibility(View.GONE);
+
+        //TODO - REMOVE IF JARED DOESN'T WANT ANIMATIONS
+        mRightPanelBackground.setVisibility(View.GONE);
+        mRightPanelContainer.setVisibility(View.GONE);
 
         //Stepper
         RecipeStep lCurrStep = HomeCooked.getInstance().getNextShow().getCurrentStep();
@@ -281,6 +292,11 @@ public class PlayerActivity extends AppCompatActivity
                 {
                     mMediaController.setEnabled(true);
                 }
+
+                if (state == PlayerState.PLAYING)
+                {
+                    setupAnimations();
+                }
             }
             else if (state == PlayerState.ERROR || state == PlayerState.CLOSED)
             {
@@ -299,7 +315,6 @@ public class PlayerActivity extends AppCompatActivity
         @Override
         public void onBroadcastLoaded(boolean live, int width, int height)
         {
-
         }
     };
 
@@ -337,5 +352,20 @@ public class PlayerActivity extends AppCompatActivity
                                    .add(R.id.frameLayoutRecipeContainer, RecipeFragment.newInstance(), RecipeFragment.TAG)
                                    .addToBackStack(RecipeFragment.TAG)
                                    .commit();
+    }
+
+    private void setupAnimations()
+    {
+        //TODO - REMOVE IF JARED DOESN'T WANT ANIMATIONS
+
+        mRightPanelBackground.startAnimation(mAnimationFadeIn);
+        mRightPanelBackground.setVisibility(View.VISIBLE);
+
+        mRightPanelContainer.startAnimation(mAnimationFadeIn);
+        mRightPanelContainer.setVisibility(View.VISIBLE);
+
+        mRecipeStepContainer.startAnimation(mAnimationSlideInRight);
+        mRecipeStepContainer.setVisibility(View.VISIBLE);
+
     }
 }

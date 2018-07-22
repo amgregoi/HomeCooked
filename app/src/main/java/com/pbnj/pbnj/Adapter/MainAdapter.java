@@ -40,7 +40,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolderBase
 
     private List<RecipeItem> mItems;
     private MainAdapterListener mListener;
-    private boolean mLiveFlag = false;
+    private boolean mLiveFlag = true;
 
     public MainAdapter(MainAdapterListener listener)
     {
@@ -160,6 +160,8 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolderBase
             Typeface lFontCircular = Typeface.createFromAsset(itemView.getContext().getAssets(), "fonts/CircularStd_Black.otf");
             mButtonJoin.setTypeface(lFontCircular);
             mButtonShare.setTypeface(lFontCircular);
+
+            mButtonShare.setVisibility(View.GONE);
 
             if (mLiveFlag)
             {
