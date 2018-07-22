@@ -34,9 +34,6 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
     public MessageAdapter()
     {
         mMessages = new ArrayList<>();
-        mMessages.add(new Message("MrChef9", "I'm learning so much rn :D"));
-        mMessages.add(new Message("NomNomBoi", "I just ate all the vegetables from the last step"));
-        mMessages.add(new Message("FoodieGirl1972", "Omg this looks good"));
     }
 
     @NonNull

@@ -34,12 +34,19 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindAnim;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Predicate;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
@@ -85,6 +92,8 @@ public class PlayerActivity extends AppCompatActivity
     private MessageAdapter mMessageAdapter;
     private RecyclerView.LayoutManager mManager;
 
+    private boolean isStarting = true;
+
     public static Intent newInstance(Context context)
     {
         Intent lIntent = new Intent(context, PlayerActivity.class);
@@ -107,6 +116,7 @@ public class PlayerActivity extends AppCompatActivity
         super.onResume();
         showProgressBar();
         mPlayerStatusTextView.setText("Loading latest broadcast");
+        isStarting = true;
         getLatestResourceUri();
     }
 
@@ -356,6 +366,13 @@ public class PlayerActivity extends AppCompatActivity
 
     private void setupAnimations()
     {
+        if (!isStarting)
+        {
+            return;
+        }
+
+        isStarting = false;
+
         //TODO - REMOVE IF JARED DOESN'T WANT ANIMATIONS
 
         mRightPanelBackground.startAnimation(mAnimationFadeIn);
@@ -367,5 +384,34 @@ public class PlayerActivity extends AppCompatActivity
         mRecipeStepContainer.startAnimation(mAnimationSlideInRight);
         mRecipeStepContainer.setVisibility(View.VISIBLE);
 
+        // TODO :: Auto messages - Demo purposes only
+        final List<Message> mMessages = new ArrayList<>();
+        mMessages.add(new Message("MrChef9", "I'm learning so much rn!"));
+        mMessages.add(new Message("NomNomBoi", "I just ate all the vegetables from the last step"));
+        mMessages.add(new Message("FoodieGirl1972", "Omg this looks good"));
+
+        Observable.interval(3, TimeUnit.SECONDS).takeUntil(new Predicate<Long>()
+        {
+            @Override
+            public boolean test(Long aLong) throws Exception
+            {
+                if (aLong == 3) return true;
+                return false;
+            }
+        }).observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<Long>()
+        {
+            @Override
+            public void accept(Long aLong) throws Exception
+            {
+                mMessageAdapter.addMessage(mMessages.get(aLong.intValue()));
+            }
+        }, new Consumer<Throwable>()
+        {
+            @Override
+            public void accept(Throwable throwable) throws Exception
+            {
+                throwable.printStackTrace();
+            }
+        });
     }
 }
