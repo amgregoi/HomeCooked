@@ -27,7 +27,8 @@ import butterknife.OnClick;
 
 public class BroadcastActivity extends AppCompatActivity
 {
-
+    public final static String PROD_APP_KEY = "Z3h0YacmkUuLZNonJUbExg";
+    public final static String SAND_APP_KEY = "3fVmK6Dyr9OqSs9ClDeVMw";
     @BindView(R.id.PreviewSurfaceView) SurfaceView mSurfaceView;
 
     private Broadcaster mBroadcaster;
@@ -45,7 +46,7 @@ public class BroadcastActivity extends AppCompatActivity
         setContentView(R.layout.activity_broadcast);
         ButterKnife.bind(this);
 
-        mBroadcaster = new Broadcaster(this, "3fVmK6Dyr9OqSs9ClDeVMw", mBroadcasterObserver);
+        mBroadcaster = new Broadcaster(this, PROD_APP_KEY, mBroadcasterObserver);
 
         mBroadcaster.setRotation(getWindowManager().getDefaultDisplay().getRotation());
     }

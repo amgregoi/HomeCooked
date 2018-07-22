@@ -6,6 +6,7 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.KeyEvent;
@@ -19,6 +20,7 @@ import android.widget.TextView;
 import com.bambuser.broadcaster.BroadcastPlayer;
 import com.bambuser.broadcaster.PlayerState;
 import com.pbnj.pbnj.Adapter.MessageAdapter;
+import com.pbnj.pbnj.Fragments.RecipeFragment;
 import com.pbnj.pbnj.Models.Message;
 import com.pbnj.pbnj.R;
 import com.pbnj.pbnj.Util.KeyboardUtil;
@@ -28,9 +30,11 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
@@ -46,12 +50,19 @@ public class PlayerActivity extends AppCompatActivity
     public final static String IRIS_API_KEY = "9w0vp35ztt1r9ouuys68si1bw";
     public final static String IRIS_APP_ID = "3fVmK6Dyr9OqSs9ClDeVMw";
 
+    //General Views
+    @BindView(R.id.progressBarPlayer) ProgressBar mProgressBar;
+    @BindView(R.id.cardViewLiveStatus) CardView mLiveStatusContainer;
+    @BindView(R.id.textViewWatchingCount) TextView mWatchCount;
+
+    //Player Views
     @BindView(R.id.PreviewSurfaceView) SurfaceView mSurfaceView;
     @BindView(R.id.textViewPlayerStatus) TextView mPlayerStatusTextView;
 
+    //Chat views
     @BindView(R.id.editTextMessageEntryInput) EditText mMessageEntry;
     @BindView(R.id.recyclerViewPlayerMessages) RecyclerView mRecyclerViewMessages;
-    @BindView(R.id.progressBarPlayer) ProgressBar mProgressBar;
+
 
     private final OkHttpClient mOkHttpClient = new OkHttpClient();
     private BroadcastPlayer mBroadcastPlayer = null;
@@ -211,12 +222,18 @@ public class PlayerActivity extends AppCompatActivity
 
         mBroadcastPlayer = new BroadcastPlayer(this, resourceUri, IRIS_APP_ID, mPlayerObserver);
         mBroadcastPlayer.setSurfaceView(mSurfaceView);
-        mBroadcastPlayer.setAcceptType(BroadcastPlayer.AcceptType.ANY);
+        mBroadcastPlayer.setAcceptType(BroadcastPlayer.AcceptType.ANY); //ANY
+        mBroadcastPlayer.setViewerCountObserver(mViewerCountObserver);
         mBroadcastPlayer.load();
 
         if (mBroadcastPlayer.isTypeLive())
         {
+            mLiveStatusContainer.setVisibility(View.VISIBLE);
             mBroadcastPlayer.seekTo(mBroadcastPlayer.getDuration());
+        }
+        else
+        {
+            mLiveStatusContainer.setVisibility(View.VISIBLE);
         }
     }
 
@@ -268,6 +285,23 @@ public class PlayerActivity extends AppCompatActivity
         }
     };
 
+    private final BroadcastPlayer.ViewerCountObserver mViewerCountObserver = new BroadcastPlayer.ViewerCountObserver()
+    {
+        @Override
+        public void onCurrentViewersUpdated(long viewers)
+        {
+            if (mWatchCount != null)
+            {
+                mWatchCount.setText(String.format(Locale.getDefault(), "%d", viewers));
+            }
+        }
+
+        @Override
+        public void onTotalViewersUpdated(long viewers)
+        {
+        }
+    };
+
     private void showProgressBar()
     {
         mProgressBar.setVisibility(View.VISIBLE);
@@ -276,5 +310,14 @@ public class PlayerActivity extends AppCompatActivity
     private void hideProgressBar()
     {
         mProgressBar.setVisibility(View.GONE);
+    }
+
+    @OnClick(R.id.cardViewRecipeStepContainer)
+    public void onRecipeCardClicked()
+    {
+        getSupportFragmentManager().beginTransaction()
+                                   .add(R.id.frameLayoutRecipeContainer, RecipeFragment.newInstance(), RecipeFragment.TAG)
+                                   .addToBackStack(RecipeFragment.TAG)
+                                   .commit();
     }
 }

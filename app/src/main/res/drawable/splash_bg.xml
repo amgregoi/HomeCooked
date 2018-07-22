@@ -5,4 +5,9 @@
             android:gravity="fill_horizontal|fill_vertical"
             android:src="@drawable/splash_image" />
     </item>
+    <item>
+        <bitmap
+            android:gravity="center"
+            android:src="@drawable/hc_logo" />
+    </item>
 </layer-list>
