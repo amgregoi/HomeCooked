@@ -10,9 +10,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.pbnj.pbnj.Activities.PlayerActivity;
+import com.pbnj.pbnj.HomeCooked;
+import com.pbnj.pbnj.Models.Meal;
+import com.pbnj.pbnj.Models.RecipeItem;
 import com.pbnj.pbnj.R;
+import com.squareup.picasso.Picasso;
+
+import java.util.List;
 
 import butterknife.BindColor;
 import butterknife.BindDrawable;
@@ -30,12 +38,14 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolderBase
     public final static int VIEW_TYPE_HEADER = 1;
     public final static int VIEW_TYPE_ITEM = 2;
 
+    private List<RecipeItem> mItems;
     private MainAdapterListener mListener;
     private boolean mLiveFlag = false;
 
     public MainAdapter(MainAdapterListener listener)
     {
         mListener = listener;
+        mItems = HomeCooked.getInstance().getNextShow().recipeItems;
     }
 
     @NonNull
@@ -47,15 +57,18 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolderBase
         switch (viewType)
         {
             case VIEW_TYPE_HEADER_TRANSPARENT:
-                lView = LayoutInflater.from(parent.getContext()).inflate(ViewHolderHeaderTransparent.RESOURCE, parent, false);
+                lView = LayoutInflater.from(parent.getContext())
+                                      .inflate(ViewHolderHeaderTransparent.RESOURCE, parent, false);
                 lHolder = new ViewHolderHeaderTransparent(lView);
                 break;
             case VIEW_TYPE_HEADER:
-                lView = LayoutInflater.from(parent.getContext()).inflate(ViewHolderHeader.RESOURCE, parent, false);
+                lView = LayoutInflater.from(parent.getContext())
+                                      .inflate(ViewHolderHeader.RESOURCE, parent, false);
                 lHolder = new ViewHolderHeader(lView);
                 break;
             default:
-                lView = LayoutInflater.from(parent.getContext()).inflate(ViewHolderItem.RESOURCE, parent, false);
+                lView = LayoutInflater.from(parent.getContext())
+                                      .inflate(ViewHolderItem.RESOURCE, parent, false);
                 lHolder = new ViewHolderItem(lView);
                 break;
 
@@ -73,7 +86,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolderBase
     @Override
     public int getItemCount()
     {
-        return 10;
+        return mItems.size();
     }
 
     @Override
@@ -127,9 +140,11 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolderBase
 
         @BindView(R.id.buttonMainJoin) Button mButtonJoin;
         @BindView(R.id.buttonMainShare) Button mButtonShare;
-
         @BindView(R.id.shareContainer) CardView mCardViewShare;
 
+        @BindView(R.id.textViewNextShowTime) TextView mNextShowTime;
+        @BindView(R.id.textViewMealName) TextView mMealName;
+        @BindView(R.id.textViewShowRuntime) TextView mMealRuntime;
         @BindColor(R.color.blue) int mColorBlue;
         @BindColor(R.color.white) int mColorWhite;
         @BindColor(android.R.color.transparent) int mColorTransparent;
@@ -140,11 +155,11 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolderBase
             super(itemView);
             ButterKnife.bind(this, itemView);
 
-            Typeface lFontCircular = Typeface.createFromAsset(itemView.getContext().getAssets(),  "fonts/CircularStd_Black.otf");
+            Typeface lFontCircular = Typeface.createFromAsset(itemView.getContext().getAssets(), "fonts/CircularStd_Black.otf");
             mButtonJoin.setTypeface(lFontCircular);
             mButtonShare.setTypeface(lFontCircular);
 
-            if(mLiveFlag)
+            if (mLiveFlag)
             {
                 mButtonJoin.setVisibility(View.VISIBLE);
                 mCardViewShare.setCardBackgroundColor(mColorTransparent);
@@ -157,8 +172,18 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolderBase
                 mCardViewShare.setCardBackgroundColor(mColorBlue);
                 mButtonShare.setBackgroundColor(mColorTransparent);
                 mButtonShare.setTextColor(mColorWhite);
-
             }
+        }
+
+        @Override
+        public void onBind(int position)
+        {
+            super.onBind(position);
+
+            Meal lMeal = HomeCooked.getInstance().getNextShow();
+            mMealName.setText(lMeal.title);
+            mNextShowTime.setText(lMeal.getMealTime());
+            mMealRuntime.setText(lMeal.runtime);
         }
 
         @OnClick(R.id.buttonMainJoin)
@@ -179,15 +204,24 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolderBase
     {
         public final static int RESOURCE = R.layout.item_main;
 
+        @BindView(R.id.textViewItemName) TextView mDescription;
+        @BindView(R.id.imageViewItem) ImageView mImage;
+
         public ViewHolderItem(View itemView)
         {
             super(itemView);
+            ButterKnife.bind(this, itemView);
         }
 
         @Override
         public void onBind(int position)
         {
             super.onBind(position);
+
+            RecipeItem lItem = mItems.get(position);
+
+            mDescription.setText(lItem.description);
+            Picasso.get().load(lItem.image).into(mImage);
         }
     }
 

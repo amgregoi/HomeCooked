@@ -4,31 +4,24 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- * Created by amgregoi on 7/21/18.
+ * Created by amgregoi on 7/22/18.
  */
 
-public class RecipeStep
+public class RecipeItem
 {
     public String id;
     public String description;
     public String title;
-    public String stepNumber;
+    public String image;
 
-
-    public RecipeStep(int step, String desc)
-    {
-        stepNumber = ""+step;
-        description = desc;
-    }
-
-    public RecipeStep(JSONObject obj)
+    public RecipeItem(JSONObject obj)
     {
         try
         {
             id = obj.getString("id");
             description = obj.getString("description");
             title = obj.getString("title");
-            stepNumber = obj.getString("step_number");
+            image = obj.getString("image_link");
         }
         catch (JSONException ex)
         {

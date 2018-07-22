@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -48,6 +49,22 @@ public class LoginActivity extends AppCompatActivity
 
         mUserNameInput.setTypeface(lFontCircular);
         mFinishedButton.setTypeface(lFontCircular);
+
+        mUserNameInput.setOnFocusChangeListener(new View.OnFocusChangeListener()
+        {
+            @Override
+            public void onFocusChange(View view, boolean b)
+            {
+                if(b)
+                {
+                    mUserNameInput.setHint(null);
+                }
+                else
+                {
+                    mUserNameInput.setHint("Name");
+                }
+            }
+        });
     }
 
     @OnClick(R.id.buttonLoginFinished)

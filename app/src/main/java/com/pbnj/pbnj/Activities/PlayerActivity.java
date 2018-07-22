@@ -21,7 +21,10 @@ import com.bambuser.broadcaster.BroadcastPlayer;
 import com.bambuser.broadcaster.PlayerState;
 import com.pbnj.pbnj.Adapter.MessageAdapter;
 import com.pbnj.pbnj.Fragments.RecipeFragment;
+import com.pbnj.pbnj.HomeCooked;
+import com.pbnj.pbnj.Models.Meal;
 import com.pbnj.pbnj.Models.Message;
+import com.pbnj.pbnj.Models.RecipeStep;
 import com.pbnj.pbnj.R;
 import com.pbnj.pbnj.Util.KeyboardUtil;
 import com.pbnj.pbnj.Util.SharedPrefs;
@@ -62,6 +65,10 @@ public class PlayerActivity extends AppCompatActivity
     //Chat views
     @BindView(R.id.editTextMessageEntryInput) EditText mMessageEntry;
     @BindView(R.id.recyclerViewPlayerMessages) RecyclerView mRecyclerViewMessages;
+
+    //Step views
+    @BindView(R.id.textViewStepText) TextView mStepDescription;
+    @BindView(R.id.textViewStepNumber) TextView mStepNumber;
 
 
     private final OkHttpClient mOkHttpClient = new OkHttpClient();
@@ -113,6 +120,12 @@ public class PlayerActivity extends AppCompatActivity
 
     private void initViews()
     {
+        //Stepper
+        RecipeStep lCurrStep = HomeCooked.getInstance().getNextShow().getCurrentStep();
+        mStepDescription.setText(lCurrStep.description);
+        mStepNumber.setText(lCurrStep.stepNumber);
+
+        //Font
         Typeface lFontCircular = Typeface.createFromAsset(getAssets(), "fonts/CircularStd_Book.otf");
         mMessageEntry.setTypeface(lFontCircular);
 
@@ -238,6 +251,8 @@ public class PlayerActivity extends AppCompatActivity
     }
 
     /*********************************************************************************
+     *
+     *
      *
      *********************************************************************************/
 
