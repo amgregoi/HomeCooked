@@ -86,7 +86,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolderBase
     @Override
     public int getItemCount()
     {
-        return mItems.size();
+        return mItems.size() + 2;
     }
 
     @Override
@@ -145,9 +145,11 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolderBase
         @BindView(R.id.textViewNextShowTime) TextView mNextShowTime;
         @BindView(R.id.textViewMealName) TextView mMealName;
         @BindView(R.id.textViewShowRuntime) TextView mMealRuntime;
+
         @BindColor(R.color.blue) int mColorBlue;
         @BindColor(R.color.white) int mColorWhite;
         @BindColor(android.R.color.transparent) int mColorTransparent;
+
         @BindDrawable(R.drawable.blue_edge_round_bg) Drawable mDrawableShare;
 
         public ViewHolderHeader(View itemView)
@@ -218,7 +220,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolderBase
         {
             super.onBind(position);
 
-            RecipeItem lItem = mItems.get(position);
+            RecipeItem lItem = mItems.get(position - 2);
 
             mDescription.setText(lItem.description);
             Picasso.get().load(lItem.image).into(mImage);

@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.pbnj.pbnj.R;
+import com.pbnj.pbnj.Util.SharedPrefs;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -33,6 +34,7 @@ public class LoginActivity extends AppCompatActivity
         lIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         return lIntent;
     }
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState)
     {
@@ -45,7 +47,7 @@ public class LoginActivity extends AppCompatActivity
 
     private void initViews()
     {
-        Typeface lFontCircular = Typeface.createFromAsset(getAssets(),  "fonts/CircularStd_Medium.otf");
+        Typeface lFontCircular = Typeface.createFromAsset(getAssets(), "fonts/CircularStd_Medium.otf");
 
         mUserNameInput.setTypeface(lFontCircular);
         mFinishedButton.setTypeface(lFontCircular);
@@ -55,7 +57,7 @@ public class LoginActivity extends AppCompatActivity
             @Override
             public void onFocusChange(View view, boolean b)
             {
-                if(b)
+                if (b)
                 {
                     mUserNameInput.setHint(null);
                 }
@@ -70,6 +72,12 @@ public class LoginActivity extends AppCompatActivity
     @OnClick(R.id.buttonLoginFinished)
     public void onFinishedButtonClicked()
     {
+        String lName = mUserNameInput.getText().toString();
+        if (!lName.isEmpty())
+        {
+            SharedPrefs.setUserName(lName);
+        }
+
         startActivity(MainActivity.newInstance(this));
     }
 

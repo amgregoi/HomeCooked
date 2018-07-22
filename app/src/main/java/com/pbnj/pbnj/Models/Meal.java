@@ -71,12 +71,16 @@ public class Meal
         {
 
             SimpleDateFormat lInFormat = new SimpleDateFormat("yyyy-dd-mm hh:mm:ss");
-            lInFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+            TimeZone lInZone = TimeZone.getTimeZone("UTC");
+            lInZone.useDaylightTime();
+            lInFormat.setTimeZone(lInZone);
 
             Date lDate = lInFormat.parse(startTime);
 
             SimpleDateFormat lOutFormat = new SimpleDateFormat("h:mma z");
-            lOutFormat.setTimeZone(TimeZone.getDefault());
+            TimeZone lOutZone = TimeZone.getDefault();
+            lOutZone.useDaylightTime();
+            lOutFormat.setTimeZone(lOutZone);
 
             return lOutFormat.format(lDate).replace("AM", "am").replace("PM", "pm");
         }

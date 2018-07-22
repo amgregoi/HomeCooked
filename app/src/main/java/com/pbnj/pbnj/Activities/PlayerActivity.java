@@ -120,6 +120,9 @@ public class PlayerActivity extends AppCompatActivity
 
     private void initViews()
     {
+        //Hide status text (debugging)
+        mPlayerStatusTextView.setVisibility(View.GONE);
+
         //Stepper
         RecipeStep lCurrStep = HomeCooked.getInstance().getNextShow().getCurrentStep();
         mStepDescription.setText(lCurrStep.description);
