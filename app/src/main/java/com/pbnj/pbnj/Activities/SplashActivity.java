@@ -11,6 +11,7 @@ import com.pbnj.pbnj.HomeCooked;
 import com.pbnj.pbnj.Models.Meal;
 import com.pbnj.pbnj.Util.RestClient;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import cz.msebera.android.httpclient.Header;
@@ -48,7 +49,18 @@ public class SplashActivity extends AppCompatActivity
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable)
             {
-                super.onFailure(statusCode, headers, responseString, throwable);
+                Toast.makeText(SplashActivity.this, "Problem retrieving show", Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse)
+            {
+                Toast.makeText(SplashActivity.this, "Problem retrieving show", Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse)
+            {
                 Toast.makeText(SplashActivity.this, "Problem retrieving show", Toast.LENGTH_LONG).show();
             }
         });

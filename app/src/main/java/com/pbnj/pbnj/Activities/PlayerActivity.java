@@ -390,28 +390,32 @@ public class PlayerActivity extends AppCompatActivity
         mMessages.add(new Message("NomNomBoi", "I just ate all the vegetables from the last step"));
         mMessages.add(new Message("FoodieGirl1972", "Omg this looks good"));
 
-        Observable.interval(3, TimeUnit.SECONDS).takeUntil(new Predicate<Long>()
-        {
-            @Override
-            public boolean test(Long aLong) throws Exception
-            {
-                if (aLong == 3) return true;
-                return false;
-            }
-        }).observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<Long>()
-        {
-            @Override
-            public void accept(Long aLong) throws Exception
-            {
-                mMessageAdapter.addMessage(mMessages.get(aLong.intValue()));
-            }
-        }, new Consumer<Throwable>()
-        {
-            @Override
-            public void accept(Throwable throwable) throws Exception
-            {
-                throwable.printStackTrace();
-            }
-        });
+        Observable.interval(3, TimeUnit.SECONDS)
+                  .delay(5, TimeUnit.SECONDS)
+                  .takeUntil(new Predicate<Long>()
+                  {
+                      @Override
+                      public boolean test(Long aLong) throws Exception
+                      {
+                          if (aLong == 3) return true;
+                          return false;
+                      }
+                  })
+                  .observeOn(AndroidSchedulers.mainThread())
+                  .subscribe(new Consumer<Long>()
+                  {
+                      @Override
+                      public void accept(Long aLong) throws Exception
+                      {
+                          mMessageAdapter.addMessage(mMessages.get(aLong.intValue()));
+                      }
+                  }, new Consumer<Throwable>()
+                  {
+                      @Override
+                      public void accept(Throwable throwable) throws Exception
+                      {
+                          throwable.printStackTrace();
+                      }
+                  });
     }
 }

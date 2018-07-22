@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">PBNJ</string>
+    <string name="app_name">Home Cooked</string>
     <string name="test_name"><![CDATA[Soy-Honey Chicken & Rice \nwith Togarashi Peanuts]]></string>
 
     <string name="PREF_USER_NAME"/>
