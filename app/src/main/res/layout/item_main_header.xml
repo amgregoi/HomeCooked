@@ -67,7 +67,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="25dp"
         android:layout_marginTop="20dp"
-        app:cardBackgroundColor="#44c0f3"
+        app:cardBackgroundColor="@color/blue"
         app:cardCornerRadius="20dp"
         app:cardElevation="0dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -87,11 +87,12 @@
 
 
     <android.support.v7.widget.CardView
+        android:id="@+id/shareContainer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="25dp"
         android:layout_marginTop="20dp"
-        android:background="@android:color/transparent"
+        app:cardBackgroundColor="@android:color/transparent"
         app:cardCornerRadius="20dp"
         app:cardElevation="0dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -99,13 +100,54 @@
         app:layout_constraintTop_toBottomOf="@+id/joinContainer">
 
         <Button
+            android:background="@drawable/blue_edge_round_bg"
             android:id="@+id/buttonMainShare"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/blue_edge_round_bg"
             android:minWidth="250dp"
             android:text="Share"
             android:textAllCaps="false"
             android:textColor="#44c0f3" />
     </android.support.v7.widget.CardView>
+
+    <View
+        android:id="@+id/bottomSeperator"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="35dp"
+        android:background="#cccccc"
+        app:layout_constraintTop_toBottomOf="@id/shareContainer" />
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_marginTop="25dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/bottomSeperator">
+
+        <android.support.constraint.Guideline
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent=".05"
+            android:id="@+id/guidelineLeft2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <android.support.constraint.Guideline
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent=".95"
+            android:id="@+id/guidelineRight2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <com.pbnj.pbnj.Widgets.CircularBlackTextView
+            app:layout_constraintStart_toStartOf="@id/guidelineLeft2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="WHAT YOU'LL NEED" />
+
+        <com.pbnj.pbnj.Widgets.CircularBookTextView
+            app:layout_constraintEnd_toEndOf="@id/guidelineRight2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="30 - 40 MIN" />
+
+    </android.support.constraint.ConstraintLayout>
 </android.support.constraint.ConstraintLayout>

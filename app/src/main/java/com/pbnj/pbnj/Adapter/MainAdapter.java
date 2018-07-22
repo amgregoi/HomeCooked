@@ -1,15 +1,22 @@
 package com.pbnj.pbnj.Adapter;
 
 import android.content.Context;
+import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.pbnj.pbnj.Activities.PlayerActivity;
 import com.pbnj.pbnj.R;
 
+import butterknife.BindColor;
+import butterknife.BindDrawable;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -24,6 +31,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolderBase
     public final static int VIEW_TYPE_ITEM = 2;
 
     private MainAdapterListener mListener;
+    private boolean mLiveFlag = false;
 
     public MainAdapter(MainAdapterListener listener)
     {
@@ -117,17 +125,53 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolderBase
     {
         public final static int RESOURCE = R.layout.item_main_header;
 
+        @BindView(R.id.buttonMainJoin) Button mButtonJoin;
+        @BindView(R.id.buttonMainShare) Button mButtonShare;
+
+        @BindView(R.id.shareContainer) CardView mCardViewShare;
+
+        @BindColor(R.color.blue) int mColorBlue;
+        @BindColor(R.color.white) int mColorWhite;
+        @BindColor(android.R.color.transparent) int mColorTransparent;
+        @BindDrawable(R.drawable.blue_edge_round_bg) Drawable mDrawableShare;
+
         public ViewHolderHeader(View itemView)
         {
             super(itemView);
             ButterKnife.bind(this, itemView);
+
+            Typeface lFontCircular = Typeface.createFromAsset(itemView.getContext().getAssets(),  "fonts/CircularStd_Black.otf");
+            mButtonJoin.setTypeface(lFontCircular);
+            mButtonShare.setTypeface(lFontCircular);
+
+            if(mLiveFlag)
+            {
+                mButtonJoin.setVisibility(View.VISIBLE);
+                mCardViewShare.setCardBackgroundColor(mColorTransparent);
+                mButtonShare.setBackground(mDrawableShare);
+                mButtonShare.setTextColor(mColorBlue);
+            }
+            else
+            {
+                mButtonJoin.setVisibility(View.GONE);
+                mCardViewShare.setCardBackgroundColor(mColorBlue);
+                mButtonShare.setBackgroundColor(mColorTransparent);
+                mButtonShare.setTextColor(mColorWhite);
+
+            }
         }
 
         @OnClick(R.id.buttonMainJoin)
-        public void onShareClicked()
+        public void onJoinClicked()
         {
             Context lContext = mListener.getContext();
             lContext.startActivity(PlayerActivity.newInstance(lContext));
+        }
+
+        @OnClick(R.id.buttonMainShare)
+        public void onShareClicked()
+        {
+            setLiveFlag(!mLiveFlag);
         }
     }
 
@@ -155,5 +199,16 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolderBase
     public interface MainAdapterListener
     {
         Context getContext();
+    }
+
+    /**************************************************
+     *
+     * Other
+     *
+     **************************************************/
+    public void setLiveFlag(boolean flag)
+    {
+        mLiveFlag = flag;
+        notifyItemChanged(1);
     }
 }
