@@ -1,8 +1,8 @@
 package com.pbnj.pbnj.Activities;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -19,8 +19,10 @@ import android.widget.TextView;
 import com.bambuser.broadcaster.BroadcastPlayer;
 import com.bambuser.broadcaster.PlayerState;
 import com.pbnj.pbnj.Adapter.MessageAdapter;
+import com.pbnj.pbnj.Models.Message;
 import com.pbnj.pbnj.R;
 import com.pbnj.pbnj.Util.KeyboardUtil;
+import com.pbnj.pbnj.Util.SharedPrefs;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -100,8 +102,12 @@ public class PlayerActivity extends AppCompatActivity
 
     private void initViews()
     {
+        Typeface lFontCircular = Typeface.createFromAsset(getAssets(), "fonts/CircularStd_Book.otf");
+        mMessageEntry.setTypeface(lFontCircular);
+
+        // recyclerview
         mMessageAdapter = new MessageAdapter();
-        mManager = new LinearLayoutManager(this);
+        mManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         mRecyclerViewMessages.setAdapter(mMessageAdapter);
         mRecyclerViewMessages.setLayoutManager(mManager);
 
@@ -112,10 +118,18 @@ public class PlayerActivity extends AppCompatActivity
             {
                 // Send message to api
                 // add message to adapter
+                String lMessage = mMessageEntry.getText().toString();
 
+                if (lMessage.isEmpty())
+                {
+                    return false;
+                }
+
+                mMessageAdapter.addMessage(new Message(SharedPrefs.getUserName(), lMessage));
                 mMessageEntry.setText("");
                 mMessageEntry.clearFocus();
                 KeyboardUtil.hide(PlayerActivity.this);
+                mRecyclerViewMessages.smoothScrollToPosition(mMessageAdapter.getItemCount() - 1);
 
                 return true;
             }
@@ -199,6 +213,11 @@ public class PlayerActivity extends AppCompatActivity
         mBroadcastPlayer.setSurfaceView(mSurfaceView);
         mBroadcastPlayer.setAcceptType(BroadcastPlayer.AcceptType.ANY);
         mBroadcastPlayer.load();
+
+        if (mBroadcastPlayer.isTypeLive())
+        {
+            mBroadcastPlayer.seekTo(mBroadcastPlayer.getDuration());
+        }
     }
 
     /*********************************************************************************
@@ -245,6 +264,7 @@ public class PlayerActivity extends AppCompatActivity
         @Override
         public void onBroadcastLoaded(boolean live, int width, int height)
         {
+
         }
     };
 

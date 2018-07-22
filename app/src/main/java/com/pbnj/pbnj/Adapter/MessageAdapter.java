@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
+import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -82,8 +83,14 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
             int lLength = lMessage.senderName.length();
 
             SpannableStringBuilder str = new SpannableStringBuilder(String.format(Locale.getDefault(), "%s  %s", lMessage.senderName, lMessage.message));
-            str.setSpan(new android.text.style.StyleSpan(Typeface.BOLD_ITALIC), 0, lLength, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            str.setSpan(new StyleSpan(Typeface.BOLD), 0, lLength, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             mMessageView.setText(str);
         }
+    }
+
+    public void addMessage(Message message)
+    {
+        mMessages.add(message);
+        notifyDataSetChanged();
     }
 }

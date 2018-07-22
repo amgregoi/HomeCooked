@@ -11,7 +11,14 @@ public class Message
 
     public Message(String sender, String msg)
     {
-        senderName = sender;
+        if (sender == null)
+        {
+            senderName = "Guest";
+        }
+        else
+        {
+            senderName = sender;
+        }
         message = msg;
     }
 }

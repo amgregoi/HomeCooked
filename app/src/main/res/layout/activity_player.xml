@@ -17,7 +17,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent=".57" />
+        app:layout_constraintGuide_percent=".6" />
 
     <android.support.constraint.Guideline
         android:id="@+id/guidelinePlayerRight"
@@ -152,6 +152,7 @@
             android:layout_weight=".8">
 
             <android.support.v7.widget.RecyclerView
+                android:layout_marginStart="10dp"
                 android:id="@+id/recyclerViewPlayerMessages"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -164,19 +165,19 @@
                 android:layout_alignParentBottom="true"
                 android:layout_marginTop="5dp"
                 app:cardBackgroundColor="#5f4f39"
-                app:cardCornerRadius="16dp">
+                app:cardCornerRadius="25dp">
 
                 <EditText
-                    android:layout_marginStart="20dp"
-                    android:background="@android:color/transparent"
                     android:id="@+id/editTextMessageEntryInput"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
+                    android:layout_marginStart="20dp"
+                    android:background="@android:color/transparent"
                     android:hint="Send a chat.."
+                    android:imeOptions="actionSend"
                     android:inputType="text"
                     android:maxLength="140"
                     android:maxLines="1"
-                    android:imeOptions="actionSend"
                     android:textColor="#ccffffff"
                     android:textColorHint="#ccffffff" />
 
@@ -186,11 +187,11 @@
 
     <ProgressBar
         android:id="@+id/progressBarPlayer"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="@id/guidelinePlayerCenter"
         android:layout_width="50dp"
-        android:layout_height="50dp" />
+        android:layout_height="50dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/guidelinePlayerCenter"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </android.support.constraint.ConstraintLayout>
